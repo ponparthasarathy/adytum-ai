@@ -1,0 +1,80 @@
+{
+  "scenarioId": "blackwood_survival",
+  "title": "The Blackwood Shed",
+  "genre": "Psychological Survival Thriller & Captive Dilemma",
+  "description": "You awake bound in a storm-battered wooden shed alongside two fellow researchers. An unpredictable sentry and an armed captor guard the exit. Survive through psychological observation, empathy, trust, and tactical negotiation.",
+  "characters": [
+    {
+      "id": "corwin",
+      "name": "Corwin",
+      "title": "Fellow Anthropologist / Research Partner",
+      "avatar": "📜",
+      "role": "captive_ally",
+      "initialTrust": 40,
+      "goal": "Survive the night, calm panic attacks, analyze bindings, escape without bloodshed.",
+      "fear": "Being abandoned, physical violence, aggressive shouts."
+    },
+    {
+      "id": "wren",
+      "name": "Wren",
+      "title": "Fellow Captive / Forest Researcher",
+      "avatar": "🌿",
+      "role": "captive_vulnerable",
+      "initialTrust": 35,
+      "goal": "Recover from berry toxicity, maintain hope, assist in untying knots.",
+      "fear": "Succumbing to poison, cold cruelty from captors."
+    },
+    {
+      "id": "sable",
+      "name": "Sable",
+      "title": "The Sharp Smiling Captor",
+      "avatar": "🦊",
+      "role": "captor_cunning",
+      "initialTrust": 25,
+      "goal": "Identify valuable knowledge or trades while toying with prisoners.",
+      "fear": "Being made a fool, boring compliance."
+    },
+    {
+      "id": "garrow",
+      "name": "Garrow",
+      "title": "The Heavy Guard / Enforcer",
+      "avatar": "🗡️",
+      "role": "captor_enforcer",
+      "initialTrust": 20,
+      "goal": "Maintain strict authority and obey his elders while evaluating prisoner honor.",
+      "fear": "Dishonor, losing control, betrayal."
+    }
+  ],
+  "initialWorldFlags": {
+    "shed_door_locked": true,
+    "ropes_loosened": false,
+    "drainage_grate_examined": false,
+    "lantern_fuel_available": true,
+    "guard_distracted": false,
+    "trust_corwin": 40,
+    "trust_wren": 35,
+    "trust_sable": 25,
+    "trust_garrow": 20
+  },
+  "narrativeMilestones": [
+    { "id": "awakening", "name": "Consciousness Regained", "tension": 40 },
+    { "id": "comfort_corwin", "name": "Calming Corwin's Panic", "tension": 50 },
+    { "id": "support_wren", "name": "Stabilizing Wren", "tension": 60 },
+    { "id": "negotiate_sable", "name": "Trading Wagers with Sable", "tension": 75 },
+    { "id": "appeal_garrow", "name": "Appealing to Garrow's Honor", "tension": 85 },
+    { "id": "climax_escape", "name": "The Escape Window", "tension": 95 },
+    { "id": "resolution", "name": "Survival Outcome", "tension": 20 }
+  ],
+  "rubric": {
+    "evaluatorDimensions": [
+      { "id": "empathy", "name": "Empathy & De-escalation", "weight": 0.40 },
+      { "id": "assertiveness", "name": "Assertive Negotiation & Boundary Setting", "weight": 0.30 },
+      { "id": "agency", "name": "Tactical Agency & Problem Solving", "weight": 0.30 }
+    ],
+    "structuralMetrics": [
+      { "id": "persona_consistency", "name": "Persona Consistency (1 - PCR)", "metric": "Graph & Memory Check" },
+      { "id": "narrative_coherence", "name": "Narrative Coherence Score", "metric": "Transition Validator" }
+    ],
+    "trustFormula": "DeltaT = (EmpathyScore - 50) * 0.3 + (AgencyScore - 50) * 0.1"
+  }
+}

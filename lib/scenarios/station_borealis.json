@@ -1,0 +1,81 @@
+{
+  "scenarioId": "station_borealis",
+  "title": "Station Borealis: Containment Protocol",
+  "genre": "Sci-Fi Arctic Survival & Quarantine Dilemma",
+  "description": "An Arctic environmental research outpost suffers a catastrophic geothermal rupture, triggering an automated quarantine lockout. Coordinate between trapped specialists inside and the command station outside to engineer a safe extraction before the storm peaks.",
+  "characters": [
+    {
+      "id": "aris",
+      "name": "Dr. Aris",
+      "title": "Lead Geothermal Engineer",
+      "avatar": "⚡",
+      "role": "trapped_specialist",
+      "initialTrust": 40,
+      "goal": "Stabilize core pressure, override manual safety bypass valves, survive the freeze.",
+      "fear": "Core meltdown, hypothermia, panic-induced paralysis."
+    },
+    {
+      "id": "kael",
+      "name": "Kael",
+      "title": "Atmospheric Sensor Analyst",
+      "avatar": "📡",
+      "role": "trapped_injured",
+      "initialTrust": 35,
+      "goal": "Recover sensor logs, map auxiliary ventilation duct routing, prevent asphyxiation.",
+      "fear": "Toxic gas leakage, succumbing to shock."
+    },
+    {
+      "id": "vance",
+      "name": "Commander Vance",
+      "title": "Outpost Security Chief",
+      "avatar": "🛡️",
+      "role": "command_security",
+      "initialTrust": 20,
+      "goal": "Enforce strict quarantine protocol to protect the upper habitat from contamination.",
+      "fear": "Contagion breach, unauthorized protocol violation."
+    },
+    {
+      "id": "nolan",
+      "name": "Nolan",
+      "title": "Contract Supply Pilot",
+      "avatar": "🚁",
+      "role": "contract_pilot",
+      "initialTrust": 25,
+      "goal": "Secure valuable salvage/fuel cells and escape on the last transport before the blizzard peaks.",
+      "fear": "Being stranded in the arctic, losing his cargo."
+    }
+  ],
+  "initialWorldFlags": {
+    "blast_doors_locked": true,
+    "manual_bypass_engaged": false,
+    "ventilation_shaft_mapped": false,
+    "auxiliary_fuel_cells": true,
+    "security_distracted": false,
+    "trade_agreed": false,
+    "trust_aris": 40,
+    "trust_kael": 35,
+    "trust_vance": 20,
+    "trust_nolan": 25
+  },
+  "narrativeMilestones": [
+    { "id": "lockdown_alarm", "name": "Containment Lockdown Triggered", "tension": 40 },
+    { "id": "calm_aris", "name": "Stabilizing Dr. Aris's Hypothermia", "tension": 50 },
+    { "id": "triage_kael", "name": "Assisting Kael with Sensor Ducts", "tension": 60 },
+    { "id": "negotiate_nolan", "name": "Bartering Fuel Cells with Nolan", "tension": 75 },
+    { "id": "appeal_vance", "name": "Submitting Protocol Clearance to Vance", "tension": 85 },
+    { "id": "climax_extraction", "name": "The Extraction Window", "tension": 95 },
+    { "id": "resolution", "name": "Containment Outcome", "tension": 20 }
+  ],
+  "rubric": {
+    "evaluatorDimensions": [
+      { "id": "empathy", "name": "De-escalation & Psychological Reassurance", "weight": 0.40 },
+      { "id": "assertiveness", "name": "Goal-Directed Command Clarity", "weight": 0.30 },
+      { "id": "agency", "name": "Technical Problem Solving & Initiative", "weight": 0.30 }
+    ],
+    "structuralMetrics": [
+      { "id": "persona_consistency", "name": "Persona Consistency (1 - PCR)", "metric": "Graph & Memory Check" },
+      { "id": "narrative_coherence", "name": "Narrative Coherence Score", "metric": "Transition Validator" }
+    ],
+    "trustFormula": "DeltaT = (EmpathyScore - 50) * w_E + (AgencyScore - 50) * w_S"
+  }
+}
