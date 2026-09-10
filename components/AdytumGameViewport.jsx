@@ -78,6 +78,30 @@ const CHARACTER_PROMPTS = {
     { type: 'tactical', text: 'Let us align the engineering team with security command protocol.' },
     { type: 'curious', text: 'What does station protocol mandate for core containment ruptures?' },
     { type: 'aggressive', text: 'We cannot afford committee meetings while the temperature drops!' }
+  ],
+  corwin: [
+    { type: 'empathetic', text: 'Calm down, Corwin. We will analyze the situation and escape together.' },
+    { type: 'tactical', text: 'Let us examine the console and emergency bypass controls.' },
+    { type: 'curious', text: 'What are the current telemetry readings on the main display?' },
+    { type: 'aggressive', text: 'Focus on the task and get these doors unsealed!' }
+  ],
+  wren: [
+    { type: 'empathetic', text: 'Stay strong, Wren. Focus on breathing until we stabilize the sector.' },
+    { type: 'tactical', text: 'Can you reach the telemetry terminal to map the auxiliary ducts?' },
+    { type: 'curious', text: 'What is the status of the environmental air scrubbers?' },
+    { type: 'aggressive', text: 'Keep quiet and track the telemetry readings!' }
+  ],
+  sable: [
+    { type: 'tactical', text: 'Name your price, Sable. We have research data worth trading.' },
+    { type: 'curious', text: 'What backdoors do you have into the system override?' },
+    { type: 'empathetic', text: 'We can reach a mutually beneficial deal if you lower the hoist.' },
+    { type: 'aggressive', text: 'Do not play games with us while time is running out!' }
+  ],
+  garrow: [
+    { type: 'empathetic', text: 'Commander Garrow, you value honor and protocol. We present no security risk.' },
+    { type: 'tactical', text: 'Verify our telemetry log. Authorize decontamination protocol release.' },
+    { type: 'curious', text: 'What are your direct orders regarding security containment?' },
+    { type: 'aggressive', text: 'Override this lockdown immediately!' }
   ]
 };
 
@@ -107,7 +131,29 @@ export default function AdytumGameViewport({
   const logScrollRef = useRef(null);
 
   const fullSpeechText = activeCharacter?.dialogue || '...';
-  const rubricPrompts = activeCharacter?.promptHints || CHARACTER_PROMPTS[activeCharacter?.id] || CHARACTER_PROMPTS.aris;
+
+  // Robust prompt hints normalization (handles objects, strings, missing properties)
+  const rawPrompts =
+    (activeCharacter?.promptHints && activeCharacter.promptHints.length > 0)
+      ? activeCharacter.promptHints
+      : CHARACTER_PROMPTS[activeCharacter?.id] ||
+        CHARACTER_PROMPTS[activeCharacter?.portraitKey] ||
+        CHARACTER_PROMPTS.aris;
+
+  const defaultTypes = ['empathetic', 'tactical', 'curious', 'aggressive'];
+  const rubricPrompts = (Array.isArray(rawPrompts) ? rawPrompts : [])
+    .map((item, idx) => {
+      if (typeof item === 'string') {
+        return { type: defaultTypes[idx % 4], text: item };
+      }
+      if (item && typeof item === 'object') {
+        const text = item.text || item.prompt || item.dialogue || (typeof item === 'string' ? item : '');
+        const type = item.type || defaultTypes[idx % 4];
+        return { type, text };
+      }
+      return null;
+    })
+    .filter((item) => item && typeof item.text === 'string' && item.text.trim().length > 0);
 
   // Real-time Ticking Countdown Timer
   useEffect(() => {
@@ -440,20 +486,27 @@ export default function AdytumGameViewport({
             <div className="gameboy-hints-overlay" onClick={(e) => e.stopPropagation()}>
               <div className="gb-hints-header">
                 <span>Suggested Dialogue Intentions (IEEE 5D Rubrics)</span>
-                <button onClick={() => setShowHints(false)} className="gb-hints-close">✕</button>
+                <button type="button" onClick={() => setShowHints(false)} className="gb-hints-close">✕</button>
               </div>
               <div className="gb-hints-grid">
-                {rubricPrompts.map((item, idx) => (
-                  <button
-                    key={idx}
-                    disabled={isLoading}
-                    onClick={() => handleSend(item.text)}
-                    className={`gb-hint-item hint-${item.type}`}
-                  >
-                    <span className="gb-hint-tag">{item.type.toUpperCase()}:</span>
-                    <span className="gb-hint-content">{item.text}</span>
-                  </button>
-                ))}
+                {rubricPrompts.length > 0 ? (
+                  rubricPrompts.map((item, idx) => (
+                    <button
+                      type="button"
+                      key={idx}
+                      disabled={isLoading}
+                      onClick={() => handleSend(item.text)}
+                      className={`gb-hint-item hint-${item.type}`}
+                    >
+                      <span className="gb-hint-tag">{(item.type || 'HINT').toUpperCase()}:</span>
+                      <span className="gb-hint-content">{item.text}</span>
+                    </button>
+                  ))
+                ) : (
+                  <div className="gb-hint-item hint-tactical" style={{ cursor: 'default' }}>
+                    <span className="gb-hint-content">No hints available for this character.</span>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -472,6 +525,7 @@ export default function AdytumGameViewport({
             />
 
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowHints((prev) => !prev);
