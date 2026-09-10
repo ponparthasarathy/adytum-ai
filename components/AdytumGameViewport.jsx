@@ -433,6 +433,35 @@ export default function AdytumGameViewport({
 
       {/* Retro Dialogue Box Wrapper with Generous Internal Spacing */}
       <div className="gameboy-dialogue-wrapper">
+        {/* Hint Overlay Tray (Positioned cleanly above the dialogue wrapper) */}
+        {showHints && (
+          <div className="gameboy-hints-overlay" onClick={(e) => e.stopPropagation()}>
+            <div className="gb-hints-header">
+              <span>Suggested Dialogue Intentions (IEEE 5D Rubrics)</span>
+              <button type="button" onClick={() => setShowHints(false)} className="gb-hints-close">✕</button>
+            </div>
+            <div className="gb-hints-grid">
+              {rubricPrompts.length > 0 ? (
+                rubricPrompts.map((item, idx) => (
+                  <button
+                    type="button"
+                    key={idx}
+                    disabled={isLoading}
+                    onClick={() => handleSend(item.text)}
+                    className={`gb-hint-item hint-${item.type}`}
+                  >
+                    <span className="gb-hint-tag">{(item.type || 'HINT').toUpperCase()}:</span>
+                    <span className="gb-hint-content">{item.text}</span>
+                  </button>
+                ))
+              ) : (
+                <div className="gb-hint-item hint-tactical" style={{ cursor: 'default' }}>
+                  <span className="gb-hint-content">No hints available for this character.</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {/* Namebox with Trust Indicator */}
         <div className="gameboy-namebox">
           <div className="gb-namebox-left">
@@ -481,35 +510,7 @@ export default function AdytumGameViewport({
             )}
           </div>
 
-          {/* Hint Overlay Tray */}
-          {showHints && (
-            <div className="gameboy-hints-overlay" onClick={(e) => e.stopPropagation()}>
-              <div className="gb-hints-header">
-                <span>Suggested Dialogue Intentions (IEEE 5D Rubrics)</span>
-                <button type="button" onClick={() => setShowHints(false)} className="gb-hints-close">✕</button>
-              </div>
-              <div className="gb-hints-grid">
-                {rubricPrompts.length > 0 ? (
-                  rubricPrompts.map((item, idx) => (
-                    <button
-                      type="button"
-                      key={idx}
-                      disabled={isLoading}
-                      onClick={() => handleSend(item.text)}
-                      className={`gb-hint-item hint-${item.type}`}
-                    >
-                      <span className="gb-hint-tag">{(item.type || 'HINT').toUpperCase()}:</span>
-                      <span className="gb-hint-content">{item.text}</span>
-                    </button>
-                  ))
-                ) : (
-                  <div className="gb-hint-item hint-tactical" style={{ cursor: 'default' }}>
-                    <span className="gb-hint-content">No hints available for this character.</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          
 
           {/* Player Input Bar */}
           <div className="gameboy-input-bar">
