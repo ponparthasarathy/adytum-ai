@@ -2,7 +2,7 @@
   /* Authentic GameBoy DMG-01 Green Palette & Retro CRT Theme */
   --gb-darkest: #0f380f;      /* 15, 56, 15 - Primary Stage Background */
   --gb-dark: #306230;         /* 48, 98, 48 - Panel Background, Borders */
-  --gb-mid: #8bac0f;          /* 139, 172, 15 - Subtext, Inactive tabs, Accents */
+  --gb-mid: #9bc412;          /* Enhanced contrast subtext & accents */
   --gb-bright: #9bbc0f;       /* 155, 188, 15 - Primary Highlighting, Active tabs, Text */
   --gb-amber: #d4af37;        /* 212, 175, 55 - Warm Amber Phosphor Highlight / Ally Trust */
   --gb-bright-glow: rgba(155, 188, 15, 0.4);
@@ -14,10 +14,10 @@
   --panel-border: #306230;
   --panel-border-subtle: rgba(48, 98, 48, 0.7);
   --primary: #9bbc0f;
-  --primary-muted: #8bac0f;
+  --primary-muted: #9bc412;
   --primary-glow: rgba(155, 188, 15, 0.25);
   --text-primary: #e0f8d0;
-  --text-muted: #8bac0f;
+  --text-muted: #a0c918;
   --accent-sage: #9bbc0f;
   --accent-dread: #306230;
   --font-crimson: 'Crimson Pro', Georgia, 'Times New Roman', serif;
@@ -1928,3 +1928,151 @@ html, body {
 
 
 
+
+
+/* ── Contrast Accessibility & Subtext Clarity ── */
+.gb-speaker-subtitle,
+.gb-tab-role-sub,
+.gb-filter-label,
+.gb-trust-text,
+.gb-hints-header {
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.9);
+}
+
+/* ── Responsive Mobile & Tablet Viewport Adaptations ── */
+@media (max-width: 768px) {
+  .station-system-hud-bar {
+    padding: 0 10px;
+    height: 36px;
+  }
+
+  .station-brand-tag {
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+  }
+
+  .gameboy-top-bar-container {
+    top: 44px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .gameboy-char-tabs-grid {
+    grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+    max-height: 72px;
+    gap: 4px;
+  }
+
+  .gameboy-char-card-btn {
+    padding: 3px 6px;
+  }
+
+  .gb-tab-pixel-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .gb-tab-label {
+    font-size: 0.76rem;
+  }
+
+  .gameboy-portrait-frame {
+    width: 210px;
+    height: 210px;
+    max-width: 32vh;
+    max-height: 32vh;
+  }
+
+  .gameboy-dialogue-wrapper {
+    width: 96%;
+    bottom: 8px;
+  }
+
+  .gameboy-namebox {
+    padding: 4px 12px;
+    margin-left: 8px;
+  }
+
+  .gb-speaker-title {
+    font-size: 1rem;
+  }
+
+  .gameboy-textbox {
+    min-height: 100px;
+    padding: 12px 14px 10px 14px;
+  }
+
+  .gameboy-dialogue-text {
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+
+  .gameboy-input-field {
+    font-size: 0.95rem;
+    padding: 5px 10px;
+  }
+
+  .gameboy-hint-button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .gameboy-send-button {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+  }
+
+  .gameboy-hints-overlay {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .gb-hint-item {
+    padding: 5px 8px;
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gameboy-category-filters {
+    gap: 4px;
+  }
+
+  .gb-cat-pill {
+    padding: 2px 8px;
+    font-size: 0.72rem;
+  }
+
+  .gameboy-char-tabs-grid {
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .gameboy-char-card-btn {
+    flex-shrink: 0;
+    min-width: 120px;
+  }
+
+  .gameboy-portrait-frame {
+    width: 170px;
+    height: 170px;
+    max-width: 26vh;
+    max-height: 26vh;
+  }
+
+  .gameboy-sprite-container {
+    top: 40%;
+  }
+
+  .gameboy-input-bar {
+    gap: 5px;
+  }
+
+  .gameboy-send-button {
+    padding: 5px 8px;
+    font-size: 0.78rem;
+  }
+}
