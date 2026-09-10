@@ -55,7 +55,11 @@ html, body {
 }
 
 .gameboy-screen-wrapper {
-  background: radial-gradient(circle at 50% 40%, #154515 0%, #0f380f 70%, #082108 100%);
+  background:
+    linear-gradient(180deg, rgba(15, 56, 15, 0.78) 0%, rgba(8, 33, 8, 0.9) 100%),
+    url('/gameboy/bg_gameboy_panorama.png') center/cover no-repeat;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .adytum-game-frame,
@@ -262,7 +266,9 @@ html, body {
   height: 280px;
   max-width: 42vh;
   max-height: 42vh;
-  background: #0f380f;
+  background:
+    linear-gradient(180deg, rgba(15, 56, 15, 0.4) 0%, rgba(9, 36, 9, 0.75) 100%),
+    url('/gameboy/bg_gameboy_room.png') center/cover no-repeat;
   border: 3px solid var(--primary);
   border-radius: 8px;
   box-shadow:
