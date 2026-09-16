@@ -95,31 +95,39 @@ export default function EscapeCutsceneOverlay({
 
   const activeScenario = sessionState?.activeScenario;
 
-  // Build dynamic ending config aligned with active scenario characters & vectors
+  // Build dynamic ending config aligned with active scenario characters & vectors with gender balance
   const ending = activeScenario && activeScenario.characters?.length > 0
-    ? {
-        id: `ending_${endingType}`,
-        title: activeScenario.title || 'Scenario Resolution',
-        subtitle: activeScenario.genre || 'Multi-Agent Interactive Fiction',
-        scenes: activeScenario.characters.slice(0, Math.min(3, activeScenario.characters.length)).map((c, idx) => {
-          const vectorText = activeScenario.extractionVectors?.[idx]?.description || activeScenario.extractionVectors?.[0]?.description || 'Emergency resolved.';
-          let text = '';
-          if (idx === 0) {
-            text = `${c.name} (${c.title}) monitors the console: "${vectorText}"`;
-          } else if (idx === 1) {
-            text = `${c.name} coordinates with the team to bypass sector locks and secure the extraction route.`;
-          } else {
-            text = `With all operatives accounted for, ${c.name} confirms total mission success and crisis resolution.`;
-          }
+    ? (() => {
+        const chars = activeScenario.characters;
+        const char1 = chars[0];
+        const char2 = chars.find((c) => c.gender !== char1.gender) || chars[1] || chars[0];
+        const char3 = chars.find((c) => c.id !== char1.id && c.id !== char2.id) || chars[chars.length - 1] || char1;
+        const selectedChars = [char1, char2, char3].filter((c, i, self) => self.findIndex((t) => t.id === c.id) === i);
 
-          return {
-            speaker: c.name,
-            title: c.title,
-            sprite: c.sprite,
-            text
-          };
-        })
-      }
+        return {
+          id: `ending_${endingType}`,
+          title: activeScenario.title || 'Scenario Resolution',
+          subtitle: activeScenario.genre || 'Multi-Agent Interactive Fiction',
+          scenes: selectedChars.map((c, idx) => {
+            const vectorText = activeScenario.extractionVectors?.[idx]?.description || activeScenario.extractionVectors?.[0]?.description || 'Emergency resolved.';
+            let text = '';
+            if (idx === 0) {
+              text = `${c.name} (${c.title}) monitors the console: "${vectorText}"`;
+            } else if (idx === 1) {
+              text = `${c.name} coordinates with the team to bypass sector locks and secure the extraction route.`;
+            } else {
+              text = `With all operatives accounted for, ${c.name} confirms total mission success and crisis resolution.`;
+            }
+
+            return {
+              speaker: c.name,
+              title: c.title,
+              sprite: c.sprite,
+              text
+            };
+          })
+        };
+      })()
     : DEFAULT_ENDING_CONFIGS[endingType] || DEFAULT_ENDING_CONFIGS.honor;
 
   const currentScene = ending.scenes[sceneIndex] || ending.scenes[0] || { sprite: '/gameboy/char_corwin.png', text: 'Scenario completed successfully.' };

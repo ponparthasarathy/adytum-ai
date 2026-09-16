@@ -49,55 +49,59 @@ export default function CinematicIntroOverlay({ isOpen, onComplete, activeScenar
   const [isFadingOut, setIsFadingOut] = useState(false);
   const hasFinishedRef = useRef(false);
 
-  // Build beats dynamically from active scenario if provided
+  // Build beats dynamically from active scenario with balanced male & female representation
   const introBeats = activeScenario && activeScenario.characters?.length > 0
-    ? [
-        {
-          id: 'beat_1_blackout',
-          type: 'blackout',
-          text: activeScenario.locationBadge || `${activeScenario.title?.toUpperCase()} · INCIDENT ACTIVE`,
-          duration: 2500
-        },
-        {
-          id: 'beat_2_flashback',
-          type: 'flashback',
-          speaker: activeScenario.characters[0]?.name || 'Specialist',
-          title: activeScenario.characters[0]?.title || 'Operative',
-          text: `SCENARIO: ${activeScenario.title} (${activeScenario.genre}). ${activeScenario.description}`,
-          sprite: activeScenario.characters[0]?.sprite || '/gameboy/char_corwin.png',
-          duration: 4000
-        },
-        ...(activeScenario.characters[1]
-          ? [
-              {
-                id: 'beat_3_rupture',
-                type: 'narration',
-                speaker: activeScenario.characters[1]?.name,
-                title: activeScenario.characters[1]?.title,
-                text: activeScenario.characters[1]?.dialogue || `${activeScenario.characters[1]?.name} monitors emergency telemetry as the crisis escalates.`,
-                sprite: activeScenario.characters[1]?.sprite,
-                duration: 4200
-              }
-            ]
-          : []),
-        {
-          id: 'beat_4_awakening',
-          type: 'narration',
-          speaker: 'MISSION CONTROL',
-          title: 'Active Operations',
-          text: `Active Operatives: ${activeScenario.characters?.map((c) => `${c.name} (${c.title})`).join(', ')}. Establish trust and coordinate your escape.`,
-          sprite: activeScenario.characters[activeScenario.characters.length - 1]?.sprite || '/gameboy/char_scholar.png',
-          duration: 4200
-        },
-        {
-          id: 'beat_5_title',
-          type: 'title',
-          title: activeScenario.title || 'DYNAMIC INTERACTIVE STORY',
-          subtitle: activeScenario.genre || 'Multi-Agent Interactive Fiction',
-          sprite: null,
-          duration: 3200
-        }
-      ]
+    ? (() => {
+        const chars = activeScenario.characters;
+        const char1 = chars[0];
+        // Select char2 of different gender if available to ensure gender diversity in cutscene
+        const char2 = chars.find((c) => c.gender !== char1.gender) || chars[1] || chars[0];
+        const char3 = chars.find((c) => c.id !== char1.id && c.id !== char2.id) || chars[chars.length - 1] || char1;
+
+        return [
+          {
+            id: 'beat_1_blackout',
+            type: 'blackout',
+            text: activeScenario.locationBadge || `${activeScenario.title?.toUpperCase()} · INCIDENT ACTIVE`,
+            duration: 2500
+          },
+          {
+            id: 'beat_2_flashback',
+            type: 'flashback',
+            speaker: char1.name,
+            title: char1.title,
+            text: `SCENARIO: ${activeScenario.title} (${activeScenario.genre}). ${activeScenario.description}`,
+            sprite: char1.sprite || '/gameboy/char_corwin.png',
+            duration: 4000
+          },
+          {
+            id: 'beat_3_rupture',
+            type: 'narration',
+            speaker: char2.name,
+            title: char2.title,
+            text: char2.dialogue || `${char2.name} monitors emergency telemetry as the crisis escalates.`,
+            sprite: char2.sprite || '/gameboy/char_lyra.png',
+            duration: 4200
+          },
+          {
+            id: 'beat_4_awakening',
+            type: 'narration',
+            speaker: char3.name,
+            title: char3.title,
+            text: `Active Operatives: ${chars.map((c) => `${c.name} (${c.title})`).join(', ')}. Establish trust and coordinate your escape.`,
+            sprite: char3.sprite || '/gameboy/char_garrow.png',
+            duration: 4200
+          },
+          {
+            id: 'beat_5_title',
+            type: 'title',
+            title: activeScenario.title || 'DYNAMIC INTERACTIVE STORY',
+            subtitle: activeScenario.genre || 'Multi-Agent Interactive Fiction',
+            sprite: null,
+            duration: 3200
+          }
+        ];
+      })()
     : DEFAULT_INTRO_BEATS;
 
   useEffect(() => {
