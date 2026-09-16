@@ -1038,6 +1038,26 @@ html, body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), 0 0 20px var(--gb-bright-glow);
 }
 
+.intro-char-badge-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.gb-intro-speaker-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+.gb-intro-speaker-title {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
 .intro-narration-paragraph {
   font-size: 1.35rem;
   line-height: 1.45;

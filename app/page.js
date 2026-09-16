@@ -173,8 +173,22 @@ export default function Home() {
             scenarioDialogues[c.id] = c.dialogue;
             scenarioEmotions[c.id] = 'alert';
           });
-          setCharacterDialogues((prev) => ({ ...scenarioDialogues, ...prev }));
-          setCharacterEmotions((prev) => ({ ...scenarioEmotions, ...prev }));
+
+          setCharacterDialogues((prev) => {
+            const filteredPrev = {};
+            data.activeScenario.characters.forEach((c) => {
+              if (prev[c.id]) filteredPrev[c.id] = prev[c.id];
+            });
+            return { ...scenarioDialogues, ...filteredPrev };
+          });
+
+          setCharacterEmotions((prev) => {
+            const filteredEmotions = {};
+            data.activeScenario.characters.forEach((c) => {
+              if (prev[c.id]) filteredEmotions[c.id] = prev[c.id];
+            });
+            return { ...scenarioEmotions, ...filteredEmotions };
+          });
         }
 
         if (data.evaluations && data.evaluations.length > 0) {

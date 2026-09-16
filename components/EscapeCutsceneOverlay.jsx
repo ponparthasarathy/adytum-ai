@@ -10,14 +10,20 @@ const DEFAULT_ENDING_CONFIGS = {
     subtitle: 'Decontamination Release Authorized',
     scenes: [
       {
+        speaker: 'Commander Vance',
+        title: 'Security Chief',
         sprite: '/gameboy/char_garrow.png',
         text: 'System telemetry confirms all emergency criteria met. Life support scrubbers green. Authorizing airlock release.'
       },
       {
+        speaker: 'Dr. Aris',
+        title: 'Lead Geothermal Engineer',
         sprite: '/gameboy/char_corwin.png',
-        text: 'The specialists step through the pressurized airlock into safety, the isolated sector sealed securely behind.'
+        text: 'The team steps through the pressurized airlock into safety, the isolated sector sealed securely behind.'
       },
       {
+        speaker: 'Director Sterling',
+        title: 'Expedition Director',
         sprite: '/gameboy/char_scholar.png',
         text: 'With all personnel accounted for, the expedition leader logs the successful resolution and protocol execution.'
       }
@@ -29,14 +35,20 @@ const DEFAULT_ENDING_CONFIGS = {
     subtitle: 'Freight Lift Extraction Arranged',
     scenes: [
       {
+        speaker: 'Nolan',
+        title: 'Contract Supply Pilot',
         sprite: '/gameboy/char_sable.png',
         text: 'The encrypted survey telemetry drive is secured into the console as a decoy alarm pulls security away.'
       },
       {
+        speaker: 'Shade',
+        title: 'Comms Fixer',
         sprite: '/gameboy/char_shade.png',
         text: 'The heavy freight elevator ascends through the central shaft, carrying the team to the upper staging pad.'
       },
       {
+        speaker: 'Director Sterling',
+        title: 'Expedition Director',
         sprite: '/gameboy/char_scholar.png',
         text: 'The transport engines throttle up into the storm. Valuable research preserved, crew extraction complete.'
       }
@@ -48,14 +60,20 @@ const DEFAULT_ENDING_CONFIGS = {
     subtitle: 'Service Tunnel Traversed into Shelter',
     scenes: [
       {
+        speaker: 'Dr. Lyra',
+        title: 'Systems Architect',
         sprite: '/gameboy/char_lyra.png',
         text: 'Following the auxiliary schematics, the frozen exhaust duct release is forced open.'
       },
       {
+        speaker: 'Malik',
+        title: 'Perimeter Scout',
         sprite: '/gameboy/char_malik.png',
         text: 'The scout guides the team through the sub-zero maintenance trench into safety.'
       },
       {
+        speaker: 'Director Sterling',
+        title: 'Expedition Director',
         sprite: '/gameboy/char_scholar.png',
         text: 'One by one, the crew arrives at the emergency shelter, securing the pressure hatch.'
       }
@@ -77,21 +95,30 @@ export default function EscapeCutsceneOverlay({
 
   const activeScenario = sessionState?.activeScenario;
 
-  // Build dynamic ending config if active scenario exists
-  const ending = activeScenario
+  // Build dynamic ending config aligned with active scenario characters & vectors
+  const ending = activeScenario && activeScenario.characters?.length > 0
     ? {
         id: `ending_${endingType}`,
         title: activeScenario.title || 'Scenario Resolution',
         subtitle: activeScenario.genre || 'Multi-Agent Interactive Fiction',
-        scenes: (activeScenario.characters || []).slice(0, 3).map((c, idx) => ({
-          sprite: c.sprite,
-          text:
-            idx === 0
-              ? `${c.name} monitors the console: "${activeScenario.extractionVectors?.[0]?.description || 'Emergency resolved.'}"`
-              : idx === 1
-              ? `${c.name} coordinates with the team to finalize the extraction vector and secure the perimeter.`
-              : `With all personnel accounted for, ${c.name} confirms full mission success and crisis resolution.`
-        }))
+        scenes: activeScenario.characters.slice(0, Math.min(3, activeScenario.characters.length)).map((c, idx) => {
+          const vectorText = activeScenario.extractionVectors?.[idx]?.description || activeScenario.extractionVectors?.[0]?.description || 'Emergency resolved.';
+          let text = '';
+          if (idx === 0) {
+            text = `${c.name} (${c.title}) monitors the console: "${vectorText}"`;
+          } else if (idx === 1) {
+            text = `${c.name} coordinates with the team to bypass sector locks and secure the extraction route.`;
+          } else {
+            text = `With all operatives accounted for, ${c.name} confirms total mission success and crisis resolution.`;
+          }
+
+          return {
+            speaker: c.name,
+            title: c.title,
+            sprite: c.sprite,
+            text
+          };
+        })
       }
     : DEFAULT_ENDING_CONFIGS[endingType] || DEFAULT_ENDING_CONFIGS.honor;
 
@@ -141,7 +168,7 @@ export default function EscapeCutsceneOverlay({
       }
     }, 18);
 
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, [isOpen, phase, sceneIndex, currentScene.text]);
 
   if (!isOpen) return null;
@@ -173,7 +200,7 @@ export default function EscapeCutsceneOverlay({
     <div className="fullbleed-ending-overlay gameboy-ending-overlay" onClick={handleSkipOrAdvance}>
       <div className="gameboy-crt-scanlines" />
 
-      {/* Center Character Portrait */}
+      {/* Center Character Portrait Frame */}
       {currentScene.sprite && (
         <div className="gameboy-cutscene-sprite-frame">
           <img
@@ -188,7 +215,7 @@ export default function EscapeCutsceneOverlay({
       {/* PHASE 1: Centered Cinematic Title */}
       {phase === 'title' && (
         <div className="fullbleed-title-container gameboy-title-container">
-          <div className="fullbleed-chapter-label gameboy-kicker">CONTAINMENT RESOLUTION</div>
+          <div className="fullbleed-chapter-label gameboy-kicker">SCENARIO RESOLUTION</div>
           <h1 className="fullbleed-main-title gameboy-title">{ending.title}</h1>
           <div className="fullbleed-sub-title gameboy-subtitle">{ending.subtitle}</div>
           <div className="fullbleed-advance-hint gameboy-hint">Click anywhere to proceed [Enter]</div>
@@ -198,14 +225,23 @@ export default function EscapeCutsceneOverlay({
       {/* PHASE 2: Floating Atmospheric Narration */}
       {phase === 'epilogue' && (
         <div className="fullbleed-narrative-container gameboy-narrative-container">
-          <div className="fullbleed-narration-header">
-            <h2 className="fullbleed-epilogue-heading gameboy-heading">{ending.title}</h2>
+          <div className="fullbleed-narration-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              {currentScene.speaker && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--primary)' }}>{currentScene.speaker}</span>
+                  {currentScene.title && (
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>[{currentScene.title}]</span>
+                  )}
+                </div>
+              )}
+            </div>
             <span className="gb-scene-counter">
               Log Entry {sceneIndex + 1} of {ending.scenes.length}
             </span>
           </div>
 
-          <p className="fullbleed-epilogue-paragraph gameboy-paragraph">
+          <p className="fullbleed-epilogue-paragraph gameboy-paragraph" style={{ marginTop: '10px' }}>
             {displayedText}
             {isTyping && <span className="gameboy-cursor" />}
           </p>

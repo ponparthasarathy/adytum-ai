@@ -132,13 +132,21 @@ export default function AdytumGameViewport({
 
   const fullSpeechText = activeCharacter?.dialogue || '...';
 
+  // Dynamic prompt hints fallback tailored to the active character
+  const dynamicFallbackPrompts = [
+    { type: 'empathetic', text: `${activeCharacter?.name || 'Specialist'}, stay calm. We will resolve this emergency together.` },
+    { type: 'tactical', text: `Let us analyze the emergency override controls for your sector.` },
+    { type: 'curious', text: `What is the current status of your section's telemetry?` },
+    { type: 'aggressive', text: `We must resolve this situation immediately!` }
+  ];
+
   // Robust prompt hints normalization (handles objects, strings, missing properties)
   const rawPrompts =
     (activeCharacter?.promptHints && activeCharacter.promptHints.length > 0)
       ? activeCharacter.promptHints
       : CHARACTER_PROMPTS[activeCharacter?.id] ||
         CHARACTER_PROMPTS[activeCharacter?.portraitKey] ||
-        CHARACTER_PROMPTS.aris;
+        dynamicFallbackPrompts;
 
   const defaultTypes = ['empathetic', 'tactical', 'curious', 'aggressive'];
   const rubricPrompts = (Array.isArray(rawPrompts) ? rawPrompts : [])

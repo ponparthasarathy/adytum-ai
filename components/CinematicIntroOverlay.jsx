@@ -36,7 +36,8 @@ const DEFAULT_INTRO_BEATS = [
     id: 'beat_5_title',
     type: 'title',
     title: 'DYNAMIC FICTION',
-    subtitle: 'Multi-Agent Story Engine',
+    title: 'ADYTUM FICTION',
+    subtitle: 'IEEE Multi-Agent Story Engine',
     sprite: null,
     duration: 3200
   }
@@ -49,33 +50,43 @@ export default function CinematicIntroOverlay({ isOpen, onComplete, activeScenar
   const hasFinishedRef = useRef(false);
 
   // Build beats dynamically from active scenario if provided
-  const introBeats = activeScenario
+  const introBeats = activeScenario && activeScenario.characters?.length > 0
     ? [
         {
           id: 'beat_1_blackout',
           type: 'blackout',
-          text: activeScenario.locationBadge || 'EMERGENCY INCIDENT ZONE',
+          text: activeScenario.locationBadge || `${activeScenario.title?.toUpperCase()} · INCIDENT ACTIVE`,
           duration: 2500
         },
         {
           id: 'beat_2_flashback',
           type: 'flashback',
-          text: `${activeScenario.title}: ${activeScenario.genre}`,
-          sprite: activeScenario.characters?.[0]?.sprite || '/gameboy/char_corwin.png',
-          duration: 3800
+          speaker: activeScenario.characters[0]?.name || 'Specialist',
+          title: activeScenario.characters[0]?.title || 'Operative',
+          text: `SCENARIO: ${activeScenario.title} (${activeScenario.genre}). ${activeScenario.description}`,
+          sprite: activeScenario.characters[0]?.sprite || '/gameboy/char_corwin.png',
+          duration: 4000
         },
-        {
-          id: 'beat_3_rupture',
-          type: 'narration',
-          text: activeScenario.description || 'An emergency crisis has occurred.',
-          sprite: activeScenario.characters?.[1]?.sprite || '/gameboy/char_wren.png',
-          duration: 4200
-        },
+        ...(activeScenario.characters[1]
+          ? [
+              {
+                id: 'beat_3_rupture',
+                type: 'narration',
+                speaker: activeScenario.characters[1]?.name,
+                title: activeScenario.characters[1]?.title,
+                text: activeScenario.characters[1]?.dialogue || `${activeScenario.characters[1]?.name} monitors emergency telemetry as the crisis escalates.`,
+                sprite: activeScenario.characters[1]?.sprite,
+                duration: 4200
+              }
+            ]
+          : []),
         {
           id: 'beat_4_awakening',
           type: 'narration',
-          text: `Active Operatives: ${activeScenario.characters?.map((c) => c.name).join(', ')}. Coordinate to resolve the emergency.`,
-          sprite: activeScenario.characters?.[2]?.sprite || '/gameboy/char_sable.png',
+          speaker: 'MISSION CONTROL',
+          title: 'Active Operations',
+          text: `Active Operatives: ${activeScenario.characters?.map((c) => `${c.name} (${c.title})`).join(', ')}. Establish trust and coordinate your escape.`,
+          sprite: activeScenario.characters[activeScenario.characters.length - 1]?.sprite || '/gameboy/char_scholar.png',
           duration: 4200
         },
         {
@@ -157,10 +168,11 @@ export default function CinematicIntroOverlay({ isOpen, onComplete, activeScenar
     >
       <div className="gameboy-crt-scanlines" />
 
-      {/* Sprite / Incident Art */}
+      {/* Sprite / Incident Art Frame */}
       {currentBeat.sprite && (
         <div className="intro-sprite-layer fadeInOut">
           <img
+            key={currentBeat.sprite}
             src={currentBeat.sprite}
             alt="Scenario Art"
             className="gameboy-intro-pixel-art"
@@ -171,15 +183,24 @@ export default function CinematicIntroOverlay({ isOpen, onComplete, activeScenar
       {/* BEAT 1: Opening location tag */}
       {currentBeat.type === 'blackout' && (
         <div className="intro-center-container fadeInOut">
+          <span className="live-pulse-dot-gb" style={{ marginBottom: '12px' }} />
           <p className="intro-opening-text gameboy-green-text">
             &ldquo;{currentBeat.text}&rdquo;
           </p>
         </div>
       )}
 
-      {/* BEATS 2, 3 & 4: Incident Narration */}
+      {/* BEATS 2, 3 & 4: Incident Narration & Character Badges */}
       {(currentBeat.type === 'narration' || currentBeat.type === 'flashback') && (
         <div className="intro-narration-container fadeInOut gameboy-narration-box">
+          {currentBeat.speaker && (
+            <div className="intro-char-badge-header">
+              <span className="gb-intro-speaker-name">{currentBeat.speaker}</span>
+              {currentBeat.title && (
+                <span className="gb-intro-speaker-title">[{currentBeat.title}]</span>
+              )}
+            </div>
+          )}
           <p className="intro-narration-paragraph">
             {currentBeat.text}
           </p>
@@ -189,9 +210,12 @@ export default function CinematicIntroOverlay({ isOpen, onComplete, activeScenar
       {/* BEAT 5: Cinematic Title Reveal */}
       {currentBeat.type === 'title' && (
         <div className="intro-title-container fadeInOut">
-          <div className="intro-title-kicker gameboy-kicker">IEEE MULTI-AGENT ADVENTURE</div>
+          <div className="intro-title-kicker gameboy-kicker">IEEE MULTI-AGENT STORY ENGINE</div>
           <h1 className="intro-main-title gameboy-title">{currentBeat.title}</h1>
           <div className="intro-sub-title gameboy-subtitle">{currentBeat.subtitle}</div>
+          <div className="intro-click-hint" style={{ marginTop: '16px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            Click anywhere or press Enter to launch scenario...
+          </div>
         </div>
       )}
 
@@ -200,7 +224,7 @@ export default function CinematicIntroOverlay({ isOpen, onComplete, activeScenar
         <button
           onClick={handleSkipAll}
           className="intro-skip-btn gameboy-skip-btn"
-          title="Skip prologue and enter station"
+          title="Skip prologue and enter story"
         >
           Skip Prologue [Enter] →
         </button>
